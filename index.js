@@ -12,15 +12,23 @@ let countQuize = 0
 let nowQuestion = 0
 
 // クイズAPIを取得
-fetch(url)
-.then(function(response){
-  return response.json();
-})
-.then(function(jsonData){
-  jsonData.results.forEach(result => {
-    questions.push(result)
-  });
-});
+const getQuestionAPI = () => {
+  topic.innerHTML = "取得中"
+  quizeMessage.innerHTML = "少々お待ちください"
+  fetch(url)
+  .then((response) => {
+    return response.json();
+  })
+  .then((jsonData) => {
+    jsonData.results.forEach(result => {
+      questions.push(result)
+    })
+  })
+  .then(() => {
+    nextQuestion()
+  })
+}
+
 
 // 配列をランダムに並び替える
 const arrShuffle = (arr) =>{
@@ -119,13 +127,10 @@ const nextQuestion = () =>{
     nowQuestion++;
     setQuestion()
   } else {
-    console.log("終了");
     showResult()
   }
 }
 
 btn.addEventListener('click', ()=>{
-  topic.innerHTML = "取得中"
-  quizeMessage.innerHTML = "少々お待ちください"
-  setTimeout(nextQuestion, 1000)
+  getQuestionAPI()
 })
