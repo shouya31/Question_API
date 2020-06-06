@@ -51,18 +51,27 @@ const setQuestion = () => {
   // 不要なスタートボタンをDOMから削除
   btn.remove()
 
+  // クイズの選択肢を取得し、表示させる
   getQuestionChoise()
 
+  // 選択肢以外のクイズの情報を表示する
   showQuestion(nextQuestionCategory, nextQuestionDifficulty, nextQuestionQuestion)
 }
 
 // 選択肢の情報を取得する
 const getQuestionChoise = () => {
+  // 不正解の解答を配列オブジェクトのanswersに格納する
   questions[nowQuestion].incorrect_answers.forEach( answer => {
     answers.push(answer)
   })
+
+  // 正解の解答を配列オブジェクトanswersに格納する
   answers.push(questions[nowQuestion].correct_answer)
+
+  // answersに格納されている値をランダムに並び替える
   arrShuffle(answers)
+
+  // クイズの選択肢を表示する
   answers.forEach(answer => {
     const choiseBtn = document.createElement('button')
     choiseBtn.innerHTML = answer
@@ -71,6 +80,8 @@ const getQuestionChoise = () => {
     }
     choise.appendChild(choiseBtn)
   });
+
+  // 配列をリセットする
   answers.length = 0
 }
 
