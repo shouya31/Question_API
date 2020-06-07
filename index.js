@@ -1,12 +1,12 @@
 const url = 'https://opentdb.com/api.php?amount=11'
-const questions = []
 const answers = []
-const choise = document.getElementById('choise')
-const btn = document.getElementById('btn')
+const choice = document.getElementById('choice')
+const start_btn = document.getElementById('btn')
 const topic = document.getElementById('topic')
 const quizeMessage = document.getElementById('quize-message')
 const quizeInformation = document.getElementById('quize-information')
 
+let questions = []
 let correct = 0
 let countQuize = 0
 let nowQuestion = 0
@@ -20,12 +20,13 @@ const getQuestionAPI = () => {
     return response.json();
   })
   .then((jsonData) => {
-    jsonData.results.forEach(result => {
-      questions.push(result)
-    })
+    questions = jsonData.results.slice()
   })
   .then(() => {
     nextQuestion()
+  })
+  .catch((error) => {
+    console.error('Error:', error)
   })
 }
 
@@ -49,17 +50,17 @@ const setQuestion = () => {
   const nextQuestionQuestion = questions[nowQuestion].question
 
   // 不要なスタートボタンをDOMから削除
-  btn.remove()
+  start_btn.remove()
 
   // クイズの選択肢を取得し、表示させる
-  getQuestionChoise()
+  getQuestionChoice()
 
   // 選択肢以外のクイズの情報を表示する
   showQuestion(nextQuestionCategory, nextQuestionDifficulty, nextQuestionQuestion)
 }
 
 // 選択肢の情報を取得する
-const getQuestionChoise = () => {
+const getQuestionChoice = () => {
   // 不正解の解答を配列オブジェクトのanswersに格納する
   questions[nowQuestion].incorrect_answers.forEach( answer => {
     answers.push(answer)
@@ -73,12 +74,12 @@ const getQuestionChoise = () => {
 
   // クイズの選択肢を表示する
   answers.forEach(answer => {
-    const choiseBtn = document.createElement('button')
-    choiseBtn.innerHTML = answer
+    const choiceBtn = document.createElement('button')
+    choiceBtn.innerHTML = answer
     if(answer === questions[nowQuestion].correct_answer){
-      choiseBtn.setAttribute('value', 'correct')
+      choiceBtn.setAttribute('value', 'correct')
     }
-    choise.appendChild(choiseBtn)
+    choice.appendChild(choiceBtn)
   });
 
   // 配列をリセットする
@@ -101,12 +102,12 @@ const showQuestion = (category, difficulty, question) => {
   quizeInformation.appendChild(difficultyElement)
 
   // 次のクイズを表示させる処理
-  choise.addEventListener('click', (e)=>{
+  choice.addEventListener('click', (e)=>{
 
     // 前の問題の表示を取り除く
     categoryElement.remove()
     difficultyElement.remove()
-    choise.textContent = null;
+    choice.textContent = null;
 
     // 正解の場合カウントする
     if(e.target.value == 'correct'){ correct++ }
@@ -124,7 +125,7 @@ const showResult = () => {
   topic.innerHTML = `あなたの正答は${correct}問です`
 
   // ホームボタンを表示させる
-  choise.appendChild(homeBtn)
+  choice.appendChild(homeBtn)
 
   // ホームボタンをクリックするとリロードされ、トップページに戻る
   homeBtn.addEventListener('click', () => {
